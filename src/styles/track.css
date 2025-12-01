@@ -178,7 +178,22 @@
   font-size: 12px;
   color: #b3b3b3;
 }
+/* 소리 조절 */
+.selection-row--top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.volume-slider {
+  width: 140px; 
+}
 /* 선택 구간 컨트롤 */
 
 .selection-controls {

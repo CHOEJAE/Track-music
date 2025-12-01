@@ -1,5 +1,5 @@
 export default function Recommendationicon({
-    size = 48,
+    size = 30,
     color = "#292D32",
     ...props
 }) {
