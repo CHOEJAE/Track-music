@@ -1,5 +1,7 @@
 /* src/styles/global.css */
 
+@import "tailwindcss";
+
 *,
 *::before,
 *::after {
