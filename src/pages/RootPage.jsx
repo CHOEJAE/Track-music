@@ -7,7 +7,7 @@ function RootPage() {
       {/*배경 그라데이션 원 (데코레이션 요소)왼쪽 하단 */}
       <div
         className="absolute bottom-0 left-0 w-64 h-64 md:w-[400px] md:h-[400px] 
-                   bg-gradient-to-l from-red-900/60 to-red-700/40 rounded-full 
+                   bg-linear-to-l from-red-900/60 to-red-700/40 rounded-full 
                    filter blur-3xl opacity-40"
       ></div>
 
@@ -16,7 +16,7 @@ function RootPage() {
         <h1
           className="
             text-6xl sm:text-7xl font-extrabold tracking-tight mb-4
-            bg-gradient-to-r from-red-500 to-red-900
+            bg-linear-to-l from-red-500 to-red-900
             bg-clip-text text-transparent
         "
         >
@@ -41,7 +41,7 @@ function RootPage() {
               w-48 text-center px-8 py-4
               text-gray-300 text-xl font-semibold
               rounded-full shadow-xl
-              bg-gradient-to-br from-red-600 to-red-900
+              bg-linear-to-l from-red-600 to-red-900
               hover:from-red-700 hover:to-red-950
               transition duration-300
           "
