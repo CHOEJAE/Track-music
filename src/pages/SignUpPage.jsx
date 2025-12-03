@@ -12,7 +12,7 @@ export default function SignUpPage() {
 
   return (
     // 전체 컨테이너
-    <div className="relative flex items-center justify-center h-screen bg-black text-white overflow-hidden p-4">
+    <div className="relative flex items-center justify-center h-screen text-white overflow-hidden p-4">
       {/* 왼쪽 상단 그라데이션 원 */}
       <div
         className="absolute top-0 left-0 w-[500px] h-[500px] 
@@ -36,7 +36,7 @@ export default function SignUpPage() {
       ></div>
 
       {/* 회원가입 폼 */}
-      <div className="relative z-10 w-full max-w-md p-10 bg-gray-900/80 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-800">
+      <div className="relative z-10 w-full max-w-md p-10 **bg-[#1a0000]/80** backdrop-blur-sm rounded-xl shadow-2xl border-3 border-[#4a0707] animate-form">
         <h2
           className="text-5xl font-bold text-left mb-10 p-5 pl-0 
                      bg-linear-to-l from-red-500 to-red-900 

@@ -36,7 +36,7 @@ export default function LoginPage() {
       ></div>
 
       {/* 로그인 폼 */}
-      <div className="relative z-10 w-full max-w-md p-10 bg-gray-900/80 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-800">
+      <div className="relative z-10 w-full max-w-md p-10 **bg-[#1a0000]/80** backdrop-blur-sm rounded-xl shadow-2xl border-3 border-[#4a0707] animate-form">
         <h2
           className="text-5xl font-bold text-center mb-10 p-5 pl-0 bg-linear-to-l from-red-500 to-red-900
             bg-clip-text text-transparent"
