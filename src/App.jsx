@@ -5,30 +5,36 @@
 // /home	  track 페이지
 // /result	결과 페이지
 // /profile	프로필(히스토리) 페이지
-
+// import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+
 import Header from "./components/Header.jsx";
+
+
 import TrackPage from "./pages/TrackPage.jsx";
 import RootPage from "./pages/RootPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
-import ResultPage from "./pages/ResultPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import ProfileDetailPage from "./pages/ProfileDetailPage.jsx";
 
 export default function App() {
+
+
   return (
     <div className="app-root">
-      <Header />
+       <Header/>
       <main className="app-main">
         <Routes>
           <Route path="/" element={<RootPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/home" element={<TrackPage />} />
-          <Route path="/result" element={<ResultPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/detail" element={<ProfileDetailPage />} />
         </Routes>
       </main>
+      
     </div>
   );
 }

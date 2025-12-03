@@ -1,0 +1,230 @@
+/* 공통 레이아웃 */
+.profile-page {
+  min-height: calc(100vh - 64px); 
+  background-color: #050505;
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px 48px;
+  color: #f5f5f5;
+}
+
+.profile-card,
+.profile-detail-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: #111111;
+  border-radius: 16px;
+  padding: 32px 24px 40px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+}
+.profile-card {
+  position: relative;
+}
+/* 아바타 영역 */
+.profile-avatar,
+.profile-detail-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background-color: #1d1d1d;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* 상단 텍스트 */
+.profile-name {
+  text-align: center;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.profile-username {
+  text-align: center;
+  margin-top: 4px;
+  font-size: 13px;
+  color: #a0a0a0;
+}
+
+/* 메뉴 리스트  */
+.profile-menu {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 4px;
+  border-bottom: 1px solid #262626;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.profile-menu-item:first-of-type {
+  border-top: 1px solid #262626;
+}
+
+.profile-menu-item:hover {
+  background-color: #181818;
+}
+
+.profile-menu-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-menu-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background-color: #222222;
+  
+}
+
+.profile-menu-chevron {
+  color: #565656;
+  font-size: 18px;
+}
+
+/* 상세 페이지*/
+.profile-detail-card {
+  position: relative;
+}
+
+/* 상단 back 버튼 */
+.profile-back-button {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  background: transparent;
+  border: none;
+  color: #f5f5f5;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.profile-detail-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.profile-detail-avatar {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+/* 필드 */
+.profile-field {
+  margin-top: 16px;
+}
+
+.profile-field-label {
+  font-size: 12px;
+  color: #a0a0a0;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.profile-field-value {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background-color: #181818;
+  border: 1px solid #262626;
+}
+
+.profile-field-sub {
+  padding: 6px 0;
+  font-size: 14px;
+  color: #d0d0d0;
+}
+
+/* 버튼들 */
+.profile-logout-button,
+.profile-delete-button {
+  margin-top: 24px;
+  width: 100%;
+  border-radius: 9999px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+
+.profile-logout-button {
+  background-color: #222222;
+  color: #f5f5f5;
+}
+
+.profile-logout-button:hover {
+  background-color: #2b2b2b;
+}
+
+.profile-delete-button {
+  background-color: transparent;
+  color: #ff4b4b;
+}
+
+.profile-delete-button:hover {
+  background-color: #1a0505;
+}
+
+
+.app-header {
+  height: 64px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #050505;
+  border-bottom: 1px solid #1c1c1c;
+}
+
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-header-logo {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f5f5f5;
+}
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.profile-icon-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background-color: #181818;
+  border: 1px solid #333333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #f5f5f5;
+}
+
+.profile-icon-button:hover {
+  background-color: #222222;
+}

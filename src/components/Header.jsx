@@ -1,19 +1,26 @@
+import { useNavigate } from "react-router-dom";
 import WebBrainLogo from "./icons/WebBrainLogo.jsx";
-import Personicon from "./icons/personicon.jsx";
+import Personicon from "./icons/Personicon.jsx";
+
 export default function Header() {
+  const navigate = useNavigate();
+
   return (
-    <header className="header">
-      <div className="header-left">
+    <header className="app-header">
+      <div className="app-header-left">
         <div className="logo-mark">
-          <WebBrainLogo size={24} />
+          <WebBrainLogo />
         </div>
-        <span className="logo-text">웹브레인</span>
+        <span className="app-header-title">웹브레인</span>
       </div>
 
-      <div className="header-right">
-        {/* 나중에 마이페이지/설정으로 라우팅할 버튼 */}
-        <button className="icon-button" aria-label="설정">
-          <Personicon size={24}/>
+      <div className="app-header-right">
+        <button
+          type="button"
+          className="profile-icon-button"
+          onClick={() => navigate("/profile")}
+        >
+          <Personicon />
         </button>
       </div>
     </header>
