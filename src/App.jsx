@@ -17,6 +17,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import ProfileDetailPage from "./pages/ProfileDetailPage.jsx";
+import HistoryPage from "./pages/HistoryPage.jsx";
 
 export default function App() {
 
@@ -32,6 +33,8 @@ export default function App() {
           <Route path="/home" element={<TrackPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/profile/detail" element={<ProfileDetailPage />} />
+          <Route path="/profile/history" element={<HistoryPage />} />
+
         </Routes>
       </main>
       

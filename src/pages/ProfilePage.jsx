@@ -5,47 +5,49 @@ export default function ProfilePage() {
   const navigate = useNavigate();
 
   const user = {
-    nickname: "게스트",
-    username: "guest@webbrain.ai",
+    name: "User",
+    email: "user@example.com",
   };
 
   return (
     <div className="profile-page">
       <div className="profile-card">
-        {/* Back 버튼 */}
+        {/* 뒤로가기 버튼 */}
         <button
           type="button"
           className="profile-back-button"
-          onClick={() => navigate(-1)}  
+          onClick={() => navigate(-1)}
         >
-          ← {/* 추후 아이콘으로 변경 예정 */}
+          ←
         </button>
 
-        {/*추후 background-image 로 교체예정 */}
-        <div className="profile-avatar">
-          {/* 아이콘 자리 */}
-        </div>
+        {/* 아바타 */}
+        <div className="profile-avatar" />
 
-        <div className="profile-name">{user.nickname}</div>
-        <div className="profile-username">{user.username}</div>
+        {/* 이름 / 이메일 */}
+        <div className="profile-name">{user.name}</div>
+        <div className="profile-username">{user.email}</div>
 
+        {/* 메뉴 리스트 */}
         <ul className="profile-menu">
-          {/* Profile 메뉴 부분 */}
           <li
             className="profile-menu-item"
             onClick={() => navigate("/profile/detail")}
           >
             <div className="profile-menu-left">
               <div className="profile-menu-icon" />
-              <span>프로필</span>
+              <span>프로필 상세 보기</span>
             </div>
             <span className="profile-menu-chevron">›</span>
           </li>
 
-          <li className="profile-menu-item">
+          <li
+            className="profile-menu-item"
+            onClick={() => navigate("/profile/history")}
+          >
             <div className="profile-menu-left">
               <div className="profile-menu-icon" />
-              <span>History</span>
+              <span>이용 기록 보기</span>
             </div>
             <span className="profile-menu-chevron">›</span>
           </li>

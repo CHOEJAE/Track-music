@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import WebBrainLogo from "./icons/WebBrainLogo.jsx";
 import Personicon from "./icons/Personicon.jsx";
 
@@ -7,12 +7,14 @@ export default function Header() {
 
   return (
     <header className="app-header">
-      <div className="app-header-left">
-        <div className="logo-mark">
-          <WebBrainLogo />
+      <Link to={"/home"}>
+        <div className="app-header-left">
+          <div className="logo-mark">
+            <WebBrainLogo />
+          </div>
+          <span className="app-header-title">웹브레인</span>
         </div>
-        <span className="app-header-title">웹브레인</span>
-      </div>
+      </Link>
 
       <div className="app-header-right">
         <button

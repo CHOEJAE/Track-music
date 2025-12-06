@@ -1,91 +1,42 @@
-import { useEffect, useRef, useState } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
 import { formatTime } from "../utils/time.js";
 import Playicon from "./icons/Playicon.jsx";
 import Stopicon from "./icons/Stopicon.jsx";
 import Scissorsicon from "./icons/Scissorsicon.jsx";
 import VolumeControlIcon from "./icons/Volume_control.jsx";
+import { useWaveformPanel } from "../hooks/useWaveformPanel.js";
 
-export default function WaveformPanel({
-  fileName,
-  audioUrl,
-  duration,
-  selectionStart,
-  selectionEnd,
-  onChangeStart,
-  onChangeEnd,
-  onTrimSection,
-  isTrimmed,
-}) {
-  // 음원 태그 
-  const audioRef = useRef(null);
+export default function WaveformPanel(props) {
+  const {
+    fileName,
+    audioUrl,
+    duration,
+    selectionStart,
+    selectionEnd,
+  } = props;
 
-  // 재생 / 일시정지 상태
-  const [isPlaying, setIsPlaying] = useState(false);
+  const {
+    audioRef,
+    waveformCanvasRef,
+    trimCanvasRef,
+    showTrimPreview,
+    selectionDuration,
+    isPlaying,
+    volume,
+    setVolume,
+    startMin,
+    startSec,
+    endMin,
+    endSec,
+    handlePlayPause,
+    handleTrimClick,
+    handleStartMinChange,
+    handleStartSecChange,
+    handleEndMinChange,
+    handleEndSecChange,
+  } = useWaveformPanel(props);
 
-  // 선택 구간 길이(끝 - 시작)
-  const selectionDuration = Math.max(0, selectionEnd - selectionStart);
-
-  //소리 크기 (0 ~ 1)
-  const [volume, setVolume] = useState(1);
-
- 
-  // 선택 구간 다듣고 자동 정지
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const handleTimeUpdate = () => {
-      if (audio.currentTime >= selectionEnd) {
-        audio.pause();
-        audio.currentTime = selectionEnd;
-        setIsPlaying(false);
-      }
-    };
-
-    audio.addEventListener("timeupdate", handleTimeUpdate);
-    return () => {
-      audio.removeEventListener("timeupdate", handleTimeUpdate);
-    };
-  }, [selectionEnd]);
-
-  // 다듣고 나서 음원 길이 초기화
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const handleEnded = () => setIsPlaying(false);
-    audio.addEventListener("ended", handleEnded);
-
-    return () => {
-      audio.removeEventListener("ended", handleEnded);
-    };
-  }, []);
-
-  // 볼륨 상태를 파일에 반영하도록 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.volume = volume; // 0 ~ 1
-  }, [volume]);
-
-  // 재생 / 일시정지 
-  const handlePlayPause = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-    } else {
-      audio.currentTime = selectionStart || 0;
-      audio.play();
-      setIsPlaying(true);
-    }
-  };
-
-  const totalLabel = isTrimmed
-    ? `총 길이: ${formatTime(selectionDuration)}`
-    : `총 길이: ${formatTime(duration)}`;
+  const totalLabel = `총 길이: ${formatTime(duration)}`;
 
   return (
     <section className="panel waveform-panel">
@@ -98,24 +49,35 @@ export default function WaveformPanel({
         </div>
       </header>
 
+      {/* 전체 파형 */}
       <div className="waveform-box">
-        <div
-          className={`waveform-bg ${isTrimmed ? "waveform-bg--trimmed" : ""}`}
-        />
+        <canvas ref={waveformCanvasRef} className="waveform-canvas" />
         <div className="waveform-range-labels">
-          <span>{formatTime(selectionStart)}</span>
-          <span>{formatTime(selectionEnd)}</span>
+          <span>{formatTime(0)}</span>
+          <span>{formatTime(duration)}</span>
         </div>
       </div>
 
-      {/* 선택 구간 & 소리 조절 */}
+      {/* 잘라낸 구간 파형 */}
+      {showTrimPreview && (
+        <div className="waveform-trimmed-box">
+          <div className="waveform-trimmed-header">
+            수정된 구간  ({formatTime(selectionDuration)})
+          </div>
+          <canvas
+            ref={trimCanvasRef}
+            className="waveform-trimmed-canvas"
+          />
+        </div>
+      )}
+
+      {/* 선택 구간 + 볼륨 */}
       <div className="selection-controls">
         <div className="selection-row selection-row--top">
           <span className="selection-label">선택 구간</span>
           <div className="volume-control">
-            
             <span className="volume-icon">
-            <VolumeControlIcon/>
+              <VolumeControlIcon />
             </span>
             <input
               className="volume-slider"
@@ -128,30 +90,58 @@ export default function WaveformPanel({
           </div>
         </div>
 
+        {/* 시작 (분/초) */}
         <div className="selection-row">
           <span className="selection-sub-label">시작</span>
-          <input
-            type="range"
-            min={0}
-            max={duration || 0}
-            value={selectionStart}
-            onChange={(e) =>
-              onChangeStart(Math.min(Number(e.target.value), selectionEnd))
-            }
-          />
+          <div className="selection-time-inputs">
+            <input
+              type="number"
+              min={0}
+              className="selection-number-input"
+              value={startMin}
+              onChange={handleStartMinChange}
+            />
+            <span className="selection-time-separator">분</span>
+            <input
+              type="number"
+              min={0}
+              max={59}
+              className="selection-number-input"
+              value={startSec}
+              onChange={handleStartSecChange}
+            />
+            <span className="selection-time-separator">초</span>
+          </div>
+          <span className="selection-time-label">
+            {formatTime(selectionStart)}
+          </span>
         </div>
 
+        {/* 끝 (분/초) */}
         <div className="selection-row">
           <span className="selection-sub-label">끝</span>
-          <input
-            type="range"
-            min={0}
-            max={duration || 0}
-            value={selectionEnd}
-            onChange={(e) =>
-              onChangeEnd(Math.max(Number(e.target.value), selectionStart))
-            }
-          />
+          <div className="selection-time-inputs">
+            <input
+              type="number"
+              min={0}
+              className="selection-number-input"
+              value={endMin}
+              onChange={handleEndMinChange}
+            />
+            <span className="selection-time-separator">분</span>
+            <input
+              type="number"
+              min={0}
+              max={59}
+              className="selection-number-input"
+              value={endSec}
+              onChange={handleEndSecChange}
+            />
+            <span className="selection-time-separator">초</span>
+          </div>
+          <span className="selection-time-label">
+            {formatTime(selectionEnd)}
+          </span>
         </div>
 
         <div className="selection-footer">
@@ -169,7 +159,7 @@ export default function WaveformPanel({
           <button
             className="secondary-button"
             type="button"
-            onClick={onTrimSection}
+            onClick={handleTrimClick}
           >
             <Scissorsicon /> 구간 자르기
           </button>
