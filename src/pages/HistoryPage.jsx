@@ -13,7 +13,7 @@ const MOCK_HISTORY = [
     duration: 97,
     parts: ["보컬", "드럼", "베이스"],
   },
-  {
+  { 
     id: 2,
     fileName: "음원 제목2.mp3",
     createdAt: "2025-11-27 18:40",
