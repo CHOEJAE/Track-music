@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // 백엔드 api
-const SIGNUP_URL = import.meta.env.VITE_API_URL + "/users/register";
+const SIGNUP_URL = import.meta.env.VITE_API_BASE_URL + "/users/register";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
