@@ -6,6 +6,8 @@ import Scissorsicon from "./icons/Scissorsicon.jsx";
 import VolumeControlIcon from "./icons/Volume_control.jsx";
 import { useWaveformPanel } from "../hooks/useWaveformPanel.js";
 
+// 사용하지않을것으로 확인하고, 추후 삭제 예정
+
 export default function WaveformPanel(props) {
   const {
     fileName,

@@ -1,5 +1,8 @@
 import { useRef, useState } from "react";
 import PartSelectoricon from "./icons/PartSelectoricon";
+
+// 사용하지않을것으로 확인하고, 추후 삭제 예정
+
 export default function UploadDropzone({ onFileSelect }) {
   const inputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);

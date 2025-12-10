@@ -1,4 +1,3 @@
-
 import api from "./client";
 
 //파일 업로드 ,분리 세션 생성
@@ -20,22 +19,21 @@ export async function getSeparationSession(sessionId) {
   return res.data;
 }
 
-//추천 요청
+
 export async function requestRecommendation({
-  sessionId,
-  userId,
-  instrument,    
+  youtubeUrl,
+  instrument,
   startSec,
   endSec,
+  userId, //선택? history때문에 일단은 넣어놨습니다.
 }) {
   const res = await api.post("/music/recommend", {
-    sessionId,
-    userId,
+    youtubeUrl,
     instrument,
     startSec,
     endSec,
+    userId, 
   });
-
 
   return res.data;
 }

@@ -1,13 +1,16 @@
 import axios from "axios";
 
-const baseURL =
+
+const rawBase =
   (import.meta.env.VITE_API_BASE_URL &&
     import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, "")) ||
-  "http://localhost:65041"; 
-// 기본값은 로컬 환경으로 설정했습니다.
+  "http://localhost:65041";
 
-// 연결확인용도
-console.log("[API] baseURL =", baseURL);
+
+const baseURL = `${rawBase}/api`;
+
+// 연결 확인용 로그
+console.log("[API] baseURL =", baseURL); 
 
 const client = axios.create({
   baseURL,
