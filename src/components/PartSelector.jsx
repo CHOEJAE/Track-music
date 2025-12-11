@@ -2,8 +2,7 @@ import Vocalicon from "./icons/Vocalicon.jsx";
 import Drumicon from "./icons/Drumicon.jsx";
 import Bassicon from "./icons/Bassicon.jsx";
 import Pianoicon from "./icons/Pianoicon.jsx";
-import PartPlayicon from "./icons/Part_Playicon.jsx";
-import PartDownloadicon from "./icons/Part_Downloadicon.jsx";
+
 
 const PARTS = [
   { id: "vocal", label: "보컬", Icon: Vocalicon }, // lin awesome
