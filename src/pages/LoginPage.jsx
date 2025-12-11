@@ -4,7 +4,7 @@ import axios from "axios";
 import { userStore } from "../store/userStore";
 
 // 백엔드 api
-const LOGIN_URL = import.meta.env.VITE_API_URL + "/users/login";
+const LOGIN_URL = import.meta.env.VITE_API_BASE_URL + "/users/login";
 
 export default function LoginPage() {
   const navigate = useNavigate();
