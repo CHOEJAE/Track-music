@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect } from "react";
 import { requestRecommendation } from "../api/musicApi.js";
 import { userStore } from "../store/userStore.js";
 
-
 const PART_TO_INSTRUMENT = {
   vocal: "vocals",
   drum: "drums",
@@ -13,13 +12,12 @@ const PART_TO_INSTRUMENT = {
 const TOAST_HIDE_MS = 4000;
 
 export default function useTrackPage() {
-
   const [videoUrl, setVideoUrl] = useState("");
   const [duration, setDuration] = useState(0); // 전체 길이(초)
 
   // 선택 구간 (초 단위)
   const [selectionStart, setSelectionStart] = useState(0);
-  const [selectionEnd, setSelectionEnd] = useState(30); 
+  const [selectionEnd, setSelectionEnd] = useState(30);
 
   // 보컬/드럼/베이스/멜로디
   const [selectedParts, setSelectedParts] = useState(["vocal"]);
@@ -34,13 +32,13 @@ export default function useTrackPage() {
   const [isProcessingForPartSelector, setIsProcessingForPartSelector] =
     useState(false);
 
-  //분/초 값
+  // 분/초 값
   const startMin = Math.floor(selectionStart / 60);
   const startSec = Math.floor(selectionStart % 60);
   const endMin = Math.floor(selectionEnd / 60);
   const endSec = Math.floor(selectionEnd % 60);
 
-  //Trackpage 상단에있는 링크 적용
+  //링크 적용
   const setVideoFromLink = useCallback((url) => {
     setVideoUrl(url);
     setDuration(0);
@@ -52,7 +50,7 @@ export default function useTrackPage() {
     setTimeout(() => setSplitToast(""), 2000);
   }, []);
 
-  //YouTube IFrame API로 영상 길이 자동 세팅
+  // YouTube IFrame API 영상 길이 자동으로 가져오기
   useEffect(() => {
     if (!videoUrl) return;
 
@@ -99,7 +97,7 @@ export default function useTrackPage() {
     };
   }, [videoUrl]);
 
-  // URL 쿼리파라미터에서 초기 값 세팅 
+  // URL 초기 값 세팅
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
@@ -135,7 +133,7 @@ export default function useTrackPage() {
     }
   }, []);
 
-  // === 4) 시작/종료 시각 입력 핸들러들 (분/초) ===
+  // 시작/종료 시간 
   const handleStartMinChange = useCallback(
     (value) => {
       const m = Number(value);
@@ -204,7 +202,7 @@ export default function useTrackPage() {
     [endMin, duration]
   );
 
-  //파트 선택 토글
+  // 파트 선택 토글
   const handleTogglePart = useCallback((partId) => {
     setSelectedParts((prev) =>
       prev.includes(partId)
@@ -213,7 +211,7 @@ export default function useTrackPage() {
     );
   }, []);
 
-  //추천 요청 (유튜브 링크 , 구간 , 파트로 묶어서 호출)
+  // 유튜브 링크 , 구간 , 파트한번에 호출
   const handleStartSplit = useCallback(async () => {
     if (!videoUrl) {
       alert("먼저 유튜브 링크를 설정해 주세요.");
@@ -296,7 +294,15 @@ export default function useTrackPage() {
         allResults.push(...normalized);
       }
 
-      setRecommendedTracks(allResults);
+      // 유사도 상위 5개 추출
+      const top5 = allResults
+        .slice()
+        .sort(
+          (a, b) => (b.similarity ?? 0) - (a.similarity ?? 0)
+        )
+        .slice(0, 5);
+
+      setRecommendedTracks(top5);
       setSplitToast("추천 결과가 생성되었습니다.");
     } catch (err) {
       console.error("추천 요청 중 오류:", err);
@@ -314,7 +320,6 @@ export default function useTrackPage() {
   ]);
 
   return {
-
     videoUrl,
     duration,
     selectionStart,
@@ -328,8 +333,8 @@ export default function useTrackPage() {
     recommendedTracks,
     isProcessingForPartSelector,
 
-    setVideoFromLink,        // 상단 링크 입력 후 호출
-    handleStartMinChange,   
+    setVideoFromLink,
+    handleStartMinChange,
     handleStartSecChange,
     handleEndMinChange,
     handleEndSecChange,

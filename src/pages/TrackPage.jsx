@@ -1,19 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import "../styles/track.css";
-import Header from "../components/Header.jsx";
+// import Header from "../components/Header.jsx";
 import PartSelector from "../components/PartSelector.jsx";
 import RecommendationSection from "../components/RecommendationSection.jsx";
 import useTrackPage from "../hooks/useTrackPage.js";
 import { formatTime } from "../utils/time.js";
-
-// 전체적으로 링크 입력 후 버튼을 클릭하면 handleApplyLink -> setVideoFromLink(hooks부분)
-// videoUrl 에서  Iframe api 로딩과 영상길이를 얻어옵니다. 해당 부분으로 영상길이는 전체적으로 가져오는데,
-//Trackpage 에서는  startMin, startSec, endMin, endSec 값을 이용해서 정확하게 잘려나간 범위를 백엔드로 전달
-// partSelector 에서 handleStartSplit 분리 요청, 추천 요청(requestRecommendation)호출하는데,
-// 기존에 방식이 파일,악기, 시작,끝을 받는데, 피드백으로 변경이후는, URL,악기,시작,끝,유저id(선택)으로 변경했습니다.
-// 변경된 방식을 컴펌받고나서 백엔드쪽에서 파일->url 변경을 상의후 진행할거같습니다.
-
-
 
 /**
  * 유튜브 일반 URL을 embed URL로 변환했습니다.
@@ -34,7 +26,6 @@ function toEmbedUrl(originalUrl) {
     }
 
     if (!videoId) {
-
       return originalUrl;
     }
 
@@ -86,35 +77,12 @@ export default function TrackPage() {
 
   return (
     <>
-      <Header />
       <main className="track-page">
-        {/* 링크 입력창 시작  */}
-        <section className="upload-section">
-          <div className="youtube-input-card">
-            <h2 className="section-title">유튜브 링크 </h2>
-            <p className="section-description">
-              링크 입력창, 임시로 만든거라서, 해당 부분을 삭제하고 추후 적용하시면될것같습니다.
-            </p>
-
-            <div className="youtube-input-row">
-              <input
-                type="text"
-                className="youtube-url-input"
-                placeholder="https://www.youtube.com/watch?v=..."
-                value={linkInput}
-                onChange={(e) => setLinkInput(e.target.value)}
-              />
-              <button className="primary-button" onClick={handleApplyLink}>
-                링크 적용
-              </button>
-            </div>
-          </div>
-        </section>
-{/* 링크 입력창 끝 */}
+        {/* 상단 유튜브 링크 입력 영역 */}
         {videoUrl && (
           <>
             <section className="editor-layout">
-              {/*  유튜브 플레이어 , 시간 설정 */}
+              {/* 유튜브 플레이어 , 시간 설정 */}
               <div className="youtube-panel">
                 <div className="youtube-frame-wrapper">
                   {embedUrl && (
@@ -212,8 +180,11 @@ export default function TrackPage() {
               />
             </section>
 
-            {/*  추천 결과 리스트 */}
-            <RecommendationSection tracks={recommendedTracks} />
+            {/* 추천 결과 리스트 */}
+            <RecommendationSection
+              visible={recommendedTracks.length > 0}
+              tracks={recommendedTracks}
+            />
           </>
         )}
 
