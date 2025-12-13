@@ -1,6 +1,6 @@
 /* 공통 레이아웃 */
 .profile-page {
-  min-height: calc(100vh - 64px); 
+  min-height: calc(100vh - 64px);
   background-color: #050505;
   display: flex;
   justify-content: center;
@@ -11,7 +11,7 @@
 /* 카드 공통 */
 .profile-card,
 .profile-detail-card {
-  position: relative;         
+  position: relative;
   width: 100%;
   max-width: 420px;
   background-color: #111111;
@@ -87,7 +87,6 @@
   height: 24px;
   border-radius: 999px;
   background-color: #222222;
-  
 }
 
 .profile-menu-chevron {
@@ -188,7 +187,6 @@
 .profile-delete-button:hover {
   background-color: #1a0505;
 }
-
 
 .app-header {
   height: 64px;

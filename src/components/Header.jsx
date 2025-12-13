@@ -7,7 +7,7 @@ export default function Header() {
 
   return (
     <header className="app-header">
-      <Link to={"/home"}>
+      <Link to={"/"}>
         <div className="app-header-left">
           <div className="logo-mark">
             <WebBrainLogo />
