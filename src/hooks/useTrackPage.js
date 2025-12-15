@@ -6,7 +6,7 @@ const PART_TO_INSTRUMENT = {
   vocal: "vocals",
   drum: "drums",
   bass: "bass",
-  melody: "piano",
+  melody: "other",
 };
 
 const TOAST_HIDE_MS = 4000;
@@ -227,7 +227,7 @@ export default function useTrackPage() {
         : [...prev, partId]
     );
   }, []);
-//추천 시작
+  //추천 시작
   const handleStartSplit = useCallback(async () => {
     if (!videoUrl) {
       alert("먼저 유튜브 링크를 설정해 주세요.");
@@ -271,7 +271,7 @@ export default function useTrackPage() {
 
       const res = await requestRecommendation({
         youtubeUrl: videoUrl,
-        instrument: instruments, 
+        instrument: instruments,
         startSec: startSecVal,
         endSec: endSecVal,
         topK,
@@ -285,7 +285,9 @@ export default function useTrackPage() {
         const end = item.endSec ?? item.end_sec ?? endSecVal;
 
         const instValue = item.instrument ?? null;
-        const instNormalized = Array.isArray(instValue) ? instValue[0] : instValue;
+        const instNormalized = Array.isArray(instValue)
+          ? instValue[0]
+          : instValue;
 
         return {
           id: item.id ?? `mix-${index}`,
