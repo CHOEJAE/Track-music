@@ -1,6 +1,18 @@
 import Recommendationicon from "./icons/Recommendationicon.jsx";
 import Music from "./icons/Music.jsx";
 
+import Vocalicon from "./icons/Vocalicon.jsx";
+import Drumicon from "./icons/Drumicon.jsx";
+import Bassicon from "./icons/Bassicon.jsx";
+import Pianoicon from "./icons/Pianoicon.jsx";
+
+//Resoponse에서 오는 instrument 아이콘 매핑
+const INSTRUMENT_ICON_MAP = {
+  vocals: Vocalicon,
+  drums: Drumicon,
+  bass: Bassicon,
+  piano: Pianoicon,
+};
 
 export default function RecommendationSection({ visible, tracks }) {
   if (!visible || !Array.isArray(tracks) || tracks.length === 0) return null;
@@ -21,14 +33,19 @@ export default function RecommendationSection({ visible, tracks }) {
               ? `${Math.round(t.similarity * 100)}% 유사`
               : "추천";
 
+          // instrument 값으로 아이콘 선택
+          const Icon = t.instrument
+            ? INSTRUMENT_ICON_MAP[t.instrument]
+            : null;
+
           const handleMoreClick = () => {
             let url = "";
 
             if (t.youtubeVideoId) {
-              //유튜브 ID가 있으면 해당 영상으로 바로 이동?가능하도록?
+              // 유튜브 ID가 있으면 해당 영상으로 바로 이동
               url = `https://www.youtube.com/watch?v=${t.youtubeVideoId}`;
             } else {
-              //없다는 가정으로 제목 아티스트로 유튜브 검색
+              // ID가 없으면 제목 , 아티스트로 유튜브 검색
               const q = encodeURIComponent(
                 `${t.title || ""} ${t.artist || ""}`.trim()
               );
@@ -42,10 +59,19 @@ export default function RecommendationSection({ visible, tracks }) {
 
           return (
             <article key={t.id} className="track-card">
-              {/*앨범 이미지*/}
+              {/* 앨범 이미지 */}
               <div className="track-card-artwork">
-                {/*유사도 뱃지 */}
-                <div className="track-card-badge">{similarityText}</div>
+                {/* 악기 아이콘 , 유사도 뱃지 */}
+                <div className="track-card-badge">
+                  {Icon && (
+                    <span className="track-card-badge-icon">
+                      <Icon />
+                    </span>
+                  )}
+                  <span className="track-card-badge-text">
+                    {similarityText}
+                  </span>
+                </div>
 
                 {t.albumCoverUrl ? (
                   <img
@@ -55,12 +81,12 @@ export default function RecommendationSection({ visible, tracks }) {
                   />
                 ) : (
                   <div className="track-card-placeholder">
-                    <Music/>
+                    <Music />
                   </div>
                 )}
               </div>
 
-              {/*음원제목, 작곡가 */}
+              {/* 음원제목, 작곡가 */}
               <div className="track-card-body">
                 <div className="track-card-title">
                   {t.title || "음원 제목"}
@@ -69,7 +95,7 @@ export default function RecommendationSection({ visible, tracks }) {
                   {t.artist || "작곡가 정보 없음"}
                 </div>
 
-                {/*음원 전체 길이는 일단 표시x, 더보기 버튼 오른쪽 지정 */}
+                {/* 음원 전체 길이는 표시 X, 더보기 버튼만 */}
                 <div className="track-card-footer">
                   <button
                     type="button"

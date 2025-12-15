@@ -4,7 +4,7 @@ import axios from "axios";
 import { userStore } from "../store/userStore";
 
 // 백엔드 api
-const LOGIN_URL = import.meta.env.VITE_API_BASE_URL + "/users/login";
+const LOGIN_URL = import.meta.env.VITE_API_BASE_URL + "/api/users/login";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ export default function LoginPage() {
 
       // 응답 데이터에서 사용자 정보 및 토큰 추출
       // 백엔드 응답 형식:
-      // { userId: 101, token: "jwt_token_string", nickname: "user_nickname" }
+      // { userId: 101, token: "jwt_token_string", nickname: "user_nickname" , email: "aaa@aaa.com" }
       const authData = response.data;
 
       // Zustand 스토어에 로그인 정보 저장 및 토큰 저장 (localStorage 포함)
@@ -49,11 +49,12 @@ export default function LoginPage() {
         userId: authData.userId,
         token: authData.token,
         nickname: authData.nickname,
+        email: authData.email,
       });
 
       // 홈 페이지로 이동
       console.log("로그인 성공. 유저:", authData.nickname);
-      navigate("/home");
+      navigate("/");
     } catch (err) {
       // 오류 처리 (401 Unauthorized 등)
       console.error("Login Error:", err);

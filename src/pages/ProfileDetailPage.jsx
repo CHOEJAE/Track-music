@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { userStore } from "../store/userStore";
 import "../styles/profile.css";
 
 export default function ProfileDetailPage() {

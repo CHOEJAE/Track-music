@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // 백엔드 api
-const SIGNUP_URL = import.meta.env.VITE_API_BASE_URL + "/users/register";
+const SIGNUP_URL = import.meta.env.VITE_API_BASE_URL + "/api/users/register";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -74,7 +74,7 @@ export default function SignUpPage() {
   return (
     // 전체 컨테이너
     <div className="relative flex items-center justify-center h-screen text-white overflow-hidden p-4">
-      {/* ... (그라데이션 배경 및 원들) ... */}
+      {/* 그라데이션 배경 및 원들 */}
       <div
         className="absolute top-0 left-0 w-[500px] h-[500px] 
          bg-linear-to-br from-red-800/60 to-red-600/30 rounded-full 
