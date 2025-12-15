@@ -730,3 +730,18 @@
   justify-content: center;
   line-height: 0;
 }
+/* 유사한 음악추천카드 시작-끝  */
+.track-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.track-card-range {
+  font-size: 12px;
+  color: #b3b3b3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

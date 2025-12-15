@@ -1,6 +1,6 @@
 import Recommendationicon from "./icons/Recommendationicon.jsx";
 import Music from "./icons/Music.jsx";
-
+import { formatTime } from "../utils/time.js";
 
 import Vocalicon from "./icons/Vocalicon.jsx";
 import Drumicon from "./icons/Drumicon.jsx";
@@ -60,7 +60,7 @@ export default function RecommendationSection({ visible, tracks }) {
           return (
             <article key={t.id} className="track-card">
               <div className="track-card-artwork">
-                
+
                 <div className="track-card-badge">
                   {Icon && (
                     <span className="badge-icon">
@@ -90,6 +90,12 @@ export default function RecommendationSection({ visible, tracks }) {
                 <div className="track-card-artist">{t.artist || "작곡가 정보 없음"}</div>
 
                 <div className="track-card-footer">
+                  <div className="track-card-range">
+                    {Number.isFinite(Number(t.startSec)) && Number.isFinite(Number(t.endSec))
+                      ? `${formatTime(Number(t.startSec))} - ${formatTime(Number(t.endSec))}`
+                      : ""}
+                  </div>
+
                   <button
                     type="button"
                     className="track-card-more"
