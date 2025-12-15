@@ -114,7 +114,7 @@ export default function ProfileDetailPage() {
 
   return (
     <div className="profile-page min-h-screen bg-gray-900 flex items-center justify-center p-4">
-      <div className="profile-detail-card w-full max-w-sm mx-auto bg-zinc-800 p-8 rounded-xl shadow-2xl border border-red-700/50 relative">
+      <div className="profile-detail-card w-full max-w-sm mx-auto bg-zinc-800 p-8 rounded-xl shadow-2xl relative">
         <button
           type="button"
           className="profile-back-button"
