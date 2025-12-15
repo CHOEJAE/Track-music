@@ -22,42 +22,46 @@ function clampTopK(value) {
   return Math.max(MIN_TOPK, Math.min(MAX_TOPK, int));
 }
 
+function instrumentToPartId(inst) {
+  const v = String(inst || "").toLowerCase();
+  if (v === "vocals" || v === "vocal") return "vocal";
+  if (v === "drums" || v === "drum") return "drum";
+  if (v === "bass") return "bass";
+  if (v === "piano" || v === "melody") return "melody";
+  return null;
+}
+
 export default function useTrackPage() {
   const [videoUrl, setVideoUrl] = useState("");
-  const [duration, setDuration] = useState(0); // 전체 길이(초)
+  const [duration, setDuration] = useState(0);
 
-  // 선택 구간 (초 단위)
   const [selectionStart, setSelectionStart] = useState(0);
   const [selectionEnd, setSelectionEnd] = useState(30);
 
-  // 보컬/드럼/베이스/멜로디
   const [selectedParts, setSelectedParts] = useState(["vocal"]);
 
-  // 추천 개수
+  //추천 개수
   const [recommendCount, setRecommendCount] = useState(DEFAULT_TOPK);
 
-  // 추천 결과
   const [recommendedTracks, setRecommendedTracks] = useState([]);
 
-  // 상단 토스트 메시지
   const [splitToast, setSplitToast] = useState("");
 
-  // 파트 분리 시작 로딩
   const [isProcessingForPartSelector, setIsProcessingForPartSelector] =
     useState(false);
 
-  // 분/초 값
+  // 분/초 표시용
   const startMin = Math.floor(selectionStart / 60);
   const startSec = Math.floor(selectionStart % 60);
   const endMin = Math.floor(selectionEnd / 60);
   const endSec = Math.floor(selectionEnd % 60);
 
-  // 추천 개수 입력
+  //추천 개수 입력
   const handleRecommendCountChange = useCallback((value) => {
     setRecommendCount(clampTopK(value));
   }, []);
 
-  //링크 적용
+  // 링크 적용
   const setVideoFromLink = useCallback((url) => {
     setVideoUrl(url);
     setDuration(0);
@@ -69,7 +73,7 @@ export default function useTrackPage() {
     setTimeout(() => setSplitToast(""), 2000);
   }, []);
 
-  // YouTube IFrame API 영상 길이 자동으로 가져오기
+  // YouTube IFrame API로 영상 길이 가져오기
   useEffect(() => {
     if (!videoUrl) return;
 
@@ -103,20 +107,15 @@ export default function useTrackPage() {
     } else {
       const tag = document.createElement("script");
       tag.src = "https://www.youtube.com/iframe_api";
-      window.onYouTubeIframeAPIReady = () => {
-        createPlayer();
-      };
+      window.onYouTubeIframeAPIReady = () => createPlayer();
       document.body.appendChild(tag);
     }
 
     return () => {
-      if (player && player.destroy) {
-        player.destroy();
-      }
+      if (player && player.destroy) player.destroy();
     };
   }, [videoUrl]);
 
-  // URL 초기 값 세팅
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
@@ -126,7 +125,7 @@ export default function useTrackPage() {
       const decoded = decodeURIComponent(encoded);
       const payload = JSON.parse(decoded);
 
-      if (!payload || !payload.videoUrl) return;
+      if (!payload?.videoUrl) return;
 
       const url = payload.videoUrl;
       const d = Number(payload.durationSeconds);
@@ -144,7 +143,6 @@ export default function useTrackPage() {
       }
 
       setRecommendedTracks([]);
-
       setSplitToast("외부에서 곡 정보가 전달되었습니다.");
       setTimeout(() => setSplitToast(""), 2000);
     } catch (err) {
@@ -152,7 +150,7 @@ export default function useTrackPage() {
     }
   }, []);
 
-  // 시작/종료 시간
+  // 시작/종료 입력
   const handleStartMinChange = useCallback(
     (value) => {
       const m = Number(value);
@@ -229,8 +227,7 @@ export default function useTrackPage() {
         : [...prev, partId]
     );
   }, []);
-
-  // 유튜브 링크 , 구간 , 파트 요청
+//추천 시작
   const handleStartSplit = useCallback(async () => {
     if (!videoUrl) {
       alert("먼저 유튜브 링크를 설정해 주세요.");
@@ -254,6 +251,11 @@ export default function useTrackPage() {
 
     const topK = clampTopK(recommendCount);
 
+    //선택된 파트들을 instrument 배열
+    const instruments = selectedParts
+      .map((partId) => PART_TO_INSTRUMENT[partId])
+      .filter(Boolean);
+
     setIsProcessingForPartSelector(true);
     setSplitToast("AI가 유사한 음악을 추천 중입니다...");
 
@@ -267,66 +269,48 @@ export default function useTrackPage() {
       const startSecVal = selectionStart;
       const endSecVal = selectionEnd;
 
-      const allResults = [];
+      const res = await requestRecommendation({
+        youtubeUrl: videoUrl,
+        instrument: instruments, 
+        startSec: startSecVal,
+        endSec: endSecVal,
+        topK,
+        userId,
+      });
 
-      // 선택된 각 파트 추천 요청
-      for (const partId of selectedParts) {
-        const instrument = PART_TO_INSTRUMENT[partId];
-        if (!instrument) continue;
+      const rawList = res?.results || res?.recommendations || res || [];
 
-        // instrument 배열형태로 ,topK 전달
-        const res = await requestRecommendation({
-          youtubeUrl: videoUrl,
-          instrument: [instrument],
-          startSec: startSecVal,
-          endSec: endSecVal,
-          topK,
-          userId,
-        });
+      const normalized = rawList.map((item, index) => {
+        const start = item.startSec ?? item.start_sec ?? startSecVal;
+        const end = item.endSec ?? item.end_sec ?? endSecVal;
 
-        const rawList = res?.results || res?.recommendations || res || [];
+        const instValue = item.instrument ?? null;
+        const instNormalized = Array.isArray(instValue) ? instValue[0] : instValue;
 
-        const normalized = rawList.map((item, index) => {
-          const start = item.startSec ?? item.start_sec ?? startSecVal;
-          const end = item.endSec ?? item.end_sec ?? endSecVal;
+        return {
+          id: item.id ?? `mix-${index}`,
 
-          const dur =
+          //추천 카드 아이콘
+          instrument: instNormalized,
+          partId: instrumentToPartId(instNormalized),
+
+          title:
+            item.title || item.songName || item.song_name || "제목 정보 없음",
+          artist: item.artist || "아티스트 정보 없음",
+          similarity: item.similarity ?? null,
+
+          startSec: start,
+          endSec: end,
+          durationSeconds:
             item.durationSeconds ??
-            (Number(end) - Number(start) || endSecVal - startSecVal);
+            (Number(end) - Number(start) || endSecVal - startSecVal),
 
-          const instValue = item.instrument ?? instrument;
-          const instNormalized = Array.isArray(instValue) ? instValue[0] : instValue;
+          albumCoverUrl: item.albumCoverUrl || item.album_cover_url || null,
+          youtubeVideoId: item.youtubeVideoId || item.youtube_video_id || null,
+        };
+      });
 
-          return {
-            id: item.id ?? `${partId}-${index}`,
-
-            //아이콘 매칭
-            partId,
-
-            title:
-              item.title ||
-              item.songName ||
-              item.song_name ||
-              "제목 정보 없음",
-            artist: item.artist || "아티스트 정보 없음",
-            similarity: item.similarity ?? null,
-
-            // 문자열 형태
-            instrument: instNormalized || instrument,
-
-            startSec: start,
-            endSec: end,
-            durationSeconds: dur,
-            albumCoverUrl: item.albumCoverUrl || item.album_cover_url || null,
-            youtubeVideoId: item.youtubeVideoId || item.youtube_video_id || null,
-          };
-        });
-
-        allResults.push(...normalized);
-      }
-
-  
-      const topN = allResults
+      const topN = normalized
         .slice()
         .sort((a, b) => (b.similarity ?? 0) - (a.similarity ?? 0))
         .slice(0, topK);
@@ -362,8 +346,6 @@ export default function useTrackPage() {
     selectedParts,
     recommendedTracks,
     isProcessingForPartSelector,
-
-    
     recommendCount,
     handleRecommendCountChange,
 
