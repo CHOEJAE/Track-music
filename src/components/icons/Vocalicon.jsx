@@ -1,6 +1,6 @@
 export default function VocalIcon({
-  size = 18,
-  color = "white",
+  size = "1em",
+  color = "currentColor",
   ...props
 }) {
   return (

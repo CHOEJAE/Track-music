@@ -5,7 +5,7 @@ import axios from "axios";
 const TOKEN_KEY = "accessToken";
 
 // API URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:65041";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:65041";
 const PROFILE_URL = `${API_BASE_URL}/api/auth/me`; // 서버에 로그인 유지 확인 요청
 
 // 유저 스토어

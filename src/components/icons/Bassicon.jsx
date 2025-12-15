@@ -1,6 +1,6 @@
 export default function Bassicon({
-  size = 20,
-  color = "white",
+  size = "1em",
+  color = "currentColor",
   ...props
 }) {
   return (

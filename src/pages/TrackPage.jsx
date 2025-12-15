@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
 import "../styles/track.css";
-// import Header from "../components/Header.jsx";
 import PartSelector from "../components/PartSelector.jsx";
 import RecommendationSection from "../components/RecommendationSection.jsx";
 import useTrackPage from "../hooks/useTrackPage.js";
@@ -62,6 +61,8 @@ export default function TrackPage() {
     handleEndSecChange,
     handleTogglePart,
     handleStartSplit,
+    recommendCount,
+    handleRecommendCountChange,
   } = useTrackPage();
 
   const handleApplyLink = () => {
@@ -78,7 +79,6 @@ export default function TrackPage() {
   return (
     <>
       <main className="track-page">
-        {/* 상단 유튜브 링크 입력 영역 */}
         {videoUrl && (
           <>
             <section className="editor-layout">
@@ -102,9 +102,7 @@ export default function TrackPage() {
                     <span className="label">전체 길이</span>
                     <span className="time-value">
                       {duration > 0
-                        ? `${formatTime(duration)} (${Math.floor(
-                            duration
-                          )}초)`
+                        ? `${formatTime(duration)} (${Math.floor(duration)}초)`
                         : "영상 길이를 불러오는 중입니다..."}
                     </span>
                   </div>
@@ -177,6 +175,8 @@ export default function TrackPage() {
                 onTogglePart={handleTogglePart}
                 isProcessing={isProcessingForPartSelector}
                 onStartSplit={handleStartSplit}
+                recommendCount={recommendCount}
+                onChangeRecommendCount={handleRecommendCountChange}
               />
             </section>
 

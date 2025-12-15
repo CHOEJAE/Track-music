@@ -431,7 +431,7 @@
   position: relative;
 }
 
-/* 유사도 + 악기 아이콘 뱃지 */
+/* 유사도 */
 .track-card-badge {
   position: absolute;
   top: 8px;
@@ -441,26 +441,6 @@
   padding: 4px 10px;
   font-size: 11px;
   color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.track-card-badge-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-}
-
-.track-card-badge-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.track-card-badge-text {
-  font-size: 11px;
 }
 
 /* 이미지 영역 */
@@ -705,4 +685,48 @@
 .time-value {
   font-size: 13px;
   color: #e0e0e0;
+}
+.recommend-count-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.recommend-count-label {
+  font-size: 13px;
+  color: #b3b3b3;
+}
+
+.recommend-count-input {
+  width: 90px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid #333333;
+  background-color: #181818;
+  color: #f5f5f5;
+  font-size: 13px;
+}
+
+.recommend-count-input:focus {
+  outline: none;
+  border-color: #ff2738;
+}
+
+.recommend-count-unit {
+  font-size: 13px;
+  color: #b3b3b3;
+}
+
+/* 유사도 뱃지*/
+.track-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
 }

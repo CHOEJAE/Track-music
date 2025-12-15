@@ -6,14 +6,14 @@ export default function ProfilePage() {
   const navigate = useNavigate();
 
   // // Zustand Store에서 필요한 상태 가져오기
-  // const isLoggedIn = userStore((state) => state.isLoggedIn);
-  // const nickname = userStore((state) => state.nickname);
-  // const email = userStore((state) => state.email);
+  const isLoggedIn = userStore((state) => state.isLoggedIn);
+  const nickname = userStore((state) => state.nickname);
+  const email = userStore((state) => state.email);
 
   // 테스트용
-  const isLoggedIn = true;
-  const nickname = "kim";
-  const email = "aaa@aaa.com";
+  // const isLoggedIn = true;
+  // const nickname = "kim";
+  // const email = "aaa@aaa.com";
 
   // 상태 확인용 변수
   const displayName = isLoggedIn ? nickname || "User" : "Guest";
@@ -66,7 +66,10 @@ export default function ProfilePage() {
           <div className="flex justify-center mt-8">
             <button
               type="button"
-              className="mt-5 px-3 py-3 bg-[#ff2738] text-white font-bold rounded-3xl shadow-lg hover:bg-[#e62332] transition duration-300 transform hover:scale-105"
+              className="w-[50%] py-3 bg-linear-to-r from-red-600 to-red-800 text-white 
+           rounded-xl font-bold text-lg tracking-wider 
+           hover:from-red-700 hover:to-red-900 transition duration-300 
+           focus:outline-none focus:ring-1 disabled:bg-gray-500 disabled:cursor-not-allowed"
               onClick={handleLoginRedirect}
             >
               로그인 하러 가기

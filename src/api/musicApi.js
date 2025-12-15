@@ -1,6 +1,6 @@
 import api from "./client";
 
-//파일 업로드 ,분리 세션 생성
+// 파일 업로드 , 분리 세션 생성
 export async function uploadMusicFile(file) {
   const formData = new FormData();
   formData.append("file", file);
@@ -12,28 +12,44 @@ export async function uploadMusicFile(file) {
   return res.data;
 }
 
-//분리 세션 상태 조회
+// 분리 세션 상태 조회
 export async function getSeparationSession(sessionId) {
   const res = await api.get(`/music/session/${sessionId}`);
-
   return res.data;
 }
 
-
+// 추천 요청
 export async function requestRecommendation({
   youtubeUrl,
-  instrument,
+  instrument, 
   startSec,
   endSec,
-  userId, //선택? history때문에 일단은 넣어놨습니다.
+  userId,
+  topK, //없을시, 기본값
 }) {
-  const res = await api.post("/music/recommend", {
-    youtubeUrl,
-    instrument,
-    startSec,
-    endSec,
-    userId, 
-  });
+  const instrumentArray = Array.isArray(instrument)
+    ? instrument
+    : typeof instrument === "string"
+    ? [instrument]
+    : [];
 
+//공백 제거
+  const normalizedInstrument = instrumentArray
+    .map((v) => String(v).trim().toLowerCase())
+    .filter(Boolean);
+
+  const payload = {
+    youtubeUrl,
+    instrument: normalizedInstrument, // 서버측 형태:  string[]
+    startSec: Number(startSec),
+    endSec: Number(endSec),
+    userId,
+  };
+
+  if (topK !== undefined && topK !== null) {
+    payload.topK = Number(topK);
+  }
+
+  const res = await api.post("/music/recommend", payload);
   return res.data;
 }

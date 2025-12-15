@@ -1,13 +1,15 @@
 export default function Drumicon({
-  size = 19,
-  color = "white",
+  size = "1em",
+  color = "currentColor",
   ...props
 }) {
+  const height = typeof size === "number" ? (size * 18) / 19 : size;
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={size}
-      height={(size * 18) / 19} 
+      height={height}
       viewBox="0 0 19 18"
       fill="none"
       {...props}

@@ -1,6 +1,6 @@
 export default function Pianoicon({
-  size = 24,
-  color = "white",
+  size = "1em",
+  color = "currentColor",
   ...props
 }) {
   return (

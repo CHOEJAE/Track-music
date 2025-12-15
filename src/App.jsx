@@ -40,11 +40,12 @@ export default function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/home" element={<TrackPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/profile/detail" element={<ProfileDetailPage />} />
-          <Route path="/profile/history" element={<HistoryPage />} />
+          {/* 서버 닫혀 있을 시(개발시, 그냥 url으로 상세페이지 접근 가능) */}
+          {/* <Route path="/profile/detail" element={<ProfileDetailPage />} />
+          <Route path="/profile/history" element={<HistoryPage />} /> */}
 
-          {/** 개발 단계라 주석 처리(그냥 url으로도 상세 페이지 접근 가능하게) */}
-          {/* <Route
+          {/** 서버 켜져 있을 시(로그인 정보 확인 후 로그인 안되어 있다면 상세 페이지 접근 불가) */}
+          <Route
             path="/profile/detail"
             element={
               <ProtectedRoute>
@@ -59,7 +60,7 @@ export default function App() {
                 <HistoryPage />
               </ProtectedRoute>
             }
-          /> */}
+          />
         </Routes>
       </main>
     </div>
