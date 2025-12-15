@@ -1,7 +1,7 @@
 import { useEffect, useState, Fragment } from "react";
 import axios from "axios";
 import { userStore } from "../store/userStore";
-import { MOCK_HISTORY } from "../components/mockHistory"; // 임시 히스토리 데이터
+// import { MOCK_HISTORY } from "../components/mockHistory"; // 임시 히스토리 데이터 (서버 연동되서 사용 안함)
 import useYouTubeMore from "../hooks/useYouTubeMore";
 
 const HISTORY_URL = import.meta.env.VITE_API_BASE_URL + "/api/history/user";
@@ -28,7 +28,7 @@ const formatDate = (isoString) => {
 };
 
 export default function HistoryPage() {
-  const getUserIdForApi = userStore((state) => state.getUserIdForApi);
+  const userId = userStore((state) => state.userId);
   const nickname = userStore((state) => state.nickname);
   const token = userStore((state) => state.accessToken);
 
@@ -38,15 +38,21 @@ export default function HistoryPage() {
   const { openYouTubeMore } = useYouTubeMore();
 
   useEffect(() => {
-    const userIdForApi = getUserIdForApi();
+    const userIdForApi = userId;
+
+    // console.log(
+    //   "useEffect 실행됨. token:",
+    //   token ? "존재함" : "없음",
+    //   "userIdForApi:",
+    //   userIdForApi
+    // );
 
     const fetchHistory = async () => {
       setLoading(true);
 
-      // 로그인 정보 없으면 MOCK 바로 사용 (개발용, 실 배포시엔 그냥 임시 데이터 삭제)
+      // 로그인 정보 없으면 API 요청 없이 로딩 종료 (history는 []로 유지됨)
       if (!userIdForApi || !token) {
-        console.log("로그인 정보 없음. MOCK 데이터 사용");
-        setHistory(MOCK_HISTORY);
+        console.log("로그인 정보 없음. API 요청 생략.");
         setLoading(false);
         return;
       }
@@ -59,24 +65,25 @@ export default function HistoryPage() {
         });
         setHistory(response.data);
       } catch (error) {
-        console.error("히스토리 불러오기 실패. MOCK 데이터 대체", error);
-        setHistory(MOCK_HISTORY);
+        console.error("히스토리 불러오기 실패:", error);
+        setHistory([]); // 실패 시 빈 배열로 설정
       } finally {
         setLoading(false);
       }
     };
-
     fetchHistory();
-  }, [getUserIdForApi, token]);
+  }, [userId, token]);
 
   const toggleRow = (index) => {
     setExpandedRow((prev) => (prev === index ? null : index));
   };
 
-  if (loading) {
+  const isReadyToRender = !loading;
+
+  if (!isReadyToRender) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black text-red-500 text-lg font-medium">
-        히스토리 불러오는 중...
+        이용 기록을 확인 중입니다...
       </div>
     );
   }
@@ -84,7 +91,7 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen bg-black text-gray-200 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-2 pb-2 border-b border-red-700">
+        <h1 className="text-3xl font-bold text-white mb-5 pb-5 border-b border-red-700">
           {nickname}님의 이용 기록
         </h1>
 
@@ -107,7 +114,7 @@ export default function HistoryPage() {
                     No.
                   </th>
                   <th className="px-4 py-3 text-left text-xs text-red-400">
-                    YouTube
+                    사용 링크
                   </th>
                   <th className="px-4 py-3 text-left text-xs text-red-400">
                     구간
@@ -125,10 +132,17 @@ export default function HistoryPage() {
               </thead>
 
               <tbody>
-                {history.map((item) => (
+                {history.map((item, index) => (
                   <Fragment key={item.id}>
-                    <tr className="border-b border-zinc-800 hover:bg-zinc-800 transition duration-150">
-                      <td className="px-4 py-3 text-sm">{item.id}</td>
+                    <tr
+                      // 확장 여부에 따라 hover 클래스를 조건부로 적용
+                      className={`border-b border-zinc-800 transition duration-150 ${
+                        expandedRow === item.id
+                          ? "bg-zinc-900"
+                          : "hover:bg-zinc-700"
+                      }`}
+                    >
+                      <td className="px-4 py-3 text-sm">{index + 1}</td>
                       <td className="px-4 py-3 text-red-400 text-sm">
                         <a
                           href={item.youtubeUrl}
@@ -179,7 +193,7 @@ export default function HistoryPage() {
                             <span className="flex-1 text-left">
                               노래 정보 (제목/가수)
                             </span>
-                            <span className="w-16 text-right">유사도</span>
+                            <span className="w-16 text-right pr-7">유사도</span>
                             <span className="w-10 text-right">링크</span>
                           </div>
 
@@ -200,7 +214,7 @@ export default function HistoryPage() {
                                 </span>
 
                                 {/* 유사도 */}
-                                <span className="text-red-300 font-bold text-sm shrink-0 w-16 text-right">
+                                <span className="text-red-300 font-bold text-sm shrink-0 pr-7 w-16 text-right">
                                   {(song.similarity * 100).toFixed(1)}%
                                 </span>
 

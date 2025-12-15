@@ -16,10 +16,12 @@ function mmss(sec) {
   return `${m}:${s}`;
 }
 
-// 악기 아이콘 
+// 악기 아이콘
 function getPartIcon(instrument) {
   const first = Array.isArray(instrument) ? instrument[0] : instrument;
-  const v = String(first || "").trim().toLowerCase();
+  const v = String(first || "")
+    .trim()
+    .toLowerCase();
 
   if (v === "vocals" || v === "vocal") return Vocalicon;
   if (v === "drums" || v === "drum") return Drumicon;
@@ -46,11 +48,16 @@ export default function RecommendationSection({ visible, tracks }) {
       <div className="recommend-grid">
         {tracks.map((t) => {
           const similarityText =
-            t?.similarity != null ? `${Math.round(t.similarity * 100)}% 유사` : "추천";
+            t?.similarity != null
+              ? `${Math.round(t.similarity * 100)}% 유사`
+              : "추천";
 
           const hasRange =
-            Number.isFinite(Number(t?.startSec)) && Number.isFinite(Number(t?.endSec));
-          const rangeText = hasRange ? `${mmss(t.startSec)} - ${mmss(t.endSec)}` : "";
+            Number.isFinite(Number(t?.startSec)) &&
+            Number.isFinite(Number(t?.endSec));
+          const rangeText = hasRange
+            ? `${mmss(t.startSec)} - ${mmss(t.endSec)}`
+            : "";
 
           const Icon = getPartIcon(t?.instrument);
 
@@ -63,7 +70,10 @@ export default function RecommendationSection({ visible, tracks }) {
           };
 
           return (
-            <article key={t?.id ?? `${t?.title}-${t?.artist}`} className="track-card">
+            <article
+              key={t?.id ?? `${t?.title}-${t?.artist}`}
+              className="track-card"
+            >
               <div className="track-card-artwork">
                 {/* 아이콘 00% 유사 부분*/}
                 <div
@@ -88,15 +98,26 @@ export default function RecommendationSection({ visible, tracks }) {
               </div>
 
               <div className="track-card-body">
-                <div className="track-card-title">{t?.title || "음원 제목"}</div>
-                <div className="track-card-artist">{t?.artist || "작곡가 정보 없음"}</div>
+                <div className="track-card-title">
+                  {t?.title || "음원 제목"}
+                </div>
+                <div className="track-card-artist">
+                  {t?.artist || "작곡가 정보 없음"}
+                </div>
 
                 {/* 구간 , 더보기 부분 */}
-                <div className="track-card-footer" style={{ display: "flex", gap: 10 }}>
+                <div
+                  className="track-card-footer"
+                  style={{ display: "flex", gap: 10 }}
+                >
                   {rangeText ? (
                     <span
                       className="track-card-range"
-                      style={{ marginRight: "auto", fontSize: 12, opacity: 0.85 }}
+                      style={{
+                        marginRight: "auto",
+                        fontSize: 12,
+                        opacity: 0.85,
+                      }}
                     >
                       {rangeText}
                     </span>
@@ -104,8 +125,12 @@ export default function RecommendationSection({ visible, tracks }) {
                     <span style={{ marginRight: "auto" }} />
                   )}
 
-                  <button type="button" className="track-card-more" onClick={handleMoreClick}>
-                    더보기
+                  <button
+                    type="button"
+                    className="track-card-more"
+                    onClick={handleMoreClick}
+                  >
+                    듣기
                   </button>
                 </div>
               </div>

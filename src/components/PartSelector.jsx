@@ -18,7 +18,6 @@ export default function PartSelector({
   progress,
   isSplitDone,
 
-
   recommendCount,
   onChangeRecommendCount,
 }) {
@@ -58,7 +57,6 @@ export default function PartSelector({
               {showIcons && (
                 <div className="part-actions">
                   <button className="icon-button" type="button">
-                    
                     <PartPlayicon />
                   </button>
                   <button className="icon-button" type="button">
@@ -101,12 +99,14 @@ export default function PartSelector({
         </div>
 
         <button
-          className={`primary-button ${isProcessing ? "primary-button--disabled" : ""}`}
+          className={`primary-button mt-5 ${
+            isProcessing ? "primary-button--disabled" : ""
+          }`}
           type="button"
           onClick={onStartSplit}
           disabled={isProcessing}
         >
-          {isProcessing ? "처리 중..." : "파트 분리 시작"}
+          {isProcessing ? "처리 중..." : "추천받기"}
         </button>
       </div>
     </section>
