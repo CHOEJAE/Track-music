@@ -1,29 +1,37 @@
 import Recommendationicon from "./icons/Recommendationicon.jsx";
 import Music from "./icons/Music.jsx";
-import { formatTime } from "../utils/time.js";
 
 import Vocalicon from "./icons/Vocalicon.jsx";
 import Drumicon from "./icons/Drumicon.jsx";
 import Bassicon from "./icons/Bassicon.jsx";
 import Pianoicon from "./icons/Pianoicon.jsx";
 
-const PART_ICON = {
-  vocal: Vocalicon,
-  drum: Drumicon,
-  bass: Bassicon,
-  melody: Pianoicon,
-};
+import useYouTubeMore from "../hooks/useYouTubeMore";
 
-function instrumentToPart(instrument) {
-  const v = String(instrument || "").toLowerCase();
-  if (v === "vocals" || v === "vocal") return "vocal";
-  if (v === "drums" || v === "drum") return "drum";
-  if (v === "bass") return "bass";
-  if (v === "piano" || v === "melody") return "melody";
+//00:00 형식
+function mmss(sec) {
+  const n = Math.max(0, Math.floor(Number(sec) || 0));
+  const m = String(Math.floor(n / 60)).padStart(2, "0");
+  const s = String(n % 60).padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+// 악기 아이콘 
+function getPartIcon(instrument) {
+  const first = Array.isArray(instrument) ? instrument[0] : instrument;
+  const v = String(first || "").trim().toLowerCase();
+
+  if (v === "vocals" || v === "vocal") return Vocalicon;
+  if (v === "drums" || v === "drum") return Drumicon;
+  if (v === "bass") return Bassicon;
+  if (v === "piano" || v === "melody") return Pianoicon;
+
   return null;
 }
 
 export default function RecommendationSection({ visible, tracks }) {
+  const { openYouTubeMore } = useYouTubeMore();
+
   if (!visible || !Array.isArray(tracks) || tracks.length === 0) return null;
 
   return (
@@ -37,45 +45,39 @@ export default function RecommendationSection({ visible, tracks }) {
 
       <div className="recommend-grid">
         {tracks.map((t) => {
-          const percent =
-            t.similarity != null
-              ? Math.round(Number(t.similarity) * 100)
-              : null;
+          const similarityText =
+            t?.similarity != null ? `${Math.round(t.similarity * 100)}% 유사` : "추천";
 
-          //카드별 파트 아이콘 선택 
-          const partKey = t.partId || instrumentToPart(t.instrument);
-          const Icon = partKey ? PART_ICON[partKey] : null;
+          const hasRange =
+            Number.isFinite(Number(t?.startSec)) && Number.isFinite(Number(t?.endSec));
+          const rangeText = hasRange ? `${mmss(t.startSec)} - ${mmss(t.endSec)}` : "";
+
+          const Icon = getPartIcon(t?.instrument);
 
           const handleMoreClick = () => {
-            let url = "";
-            if (t.youtubeVideoId) {
-              url = `https://www.youtube.com/watch?v=${t.youtubeVideoId}`;
-            } else {
-              const q = encodeURIComponent(`${t.title || ""} ${t.artist || ""}`.trim());
-              url = `https://www.youtube.com/results?search_query=${q}`;
-            }
-            if (url) window.open(url, "_blank", "noopener,noreferrer");
+            openYouTubeMore({
+              title: t?.title,
+              artist: t?.artist,
+              youtubeVideoId: t?.youtubeVideoId,
+            });
           };
 
           return (
-            <article key={t.id} className="track-card">
+            <article key={t?.id ?? `${t?.title}-${t?.artist}`} className="track-card">
               <div className="track-card-artwork">
-
-                <div className="track-card-badge">
-                  {Icon && (
-                    <span className="badge-icon">
-                      <Icon />
-                    </span>
-                  )}
-                  <span className="badge-text">
-                    {percent != null ? `${percent}% 유사` : "추천"}
-                  </span>
+                {/* 아이콘 00% 유사 부분*/}
+                <div
+                  className="track-card-badge"
+                  style={{ display: "flex", alignItems: "center", gap: 6 }}
+                >
+                  {Icon ? <Icon size={14} /> : null}
+                  <span>{similarityText}</span>
                 </div>
 
-                {t.albumCoverUrl ? (
+                {t?.albumCoverUrl ? (
                   <img
                     src={t.albumCoverUrl}
-                    alt={`${t.title} 앨범 커버`}
+                    alt={`${t?.title || "음원"} 앨범 커버`}
                     className="track-card-img"
                   />
                 ) : (
@@ -86,21 +88,23 @@ export default function RecommendationSection({ visible, tracks }) {
               </div>
 
               <div className="track-card-body">
-                <div className="track-card-title">{t.title || "음원 제목"}</div>
-                <div className="track-card-artist">{t.artist || "작곡가 정보 없음"}</div>
+                <div className="track-card-title">{t?.title || "음원 제목"}</div>
+                <div className="track-card-artist">{t?.artist || "작곡가 정보 없음"}</div>
 
-                <div className="track-card-footer">
-                  <div className="track-card-range">
-                    {Number.isFinite(Number(t.startSec)) && Number.isFinite(Number(t.endSec))
-                      ? `${formatTime(Number(t.startSec))} - ${formatTime(Number(t.endSec))}`
-                      : ""}
-                  </div>
+                {/* 구간 , 더보기 부분 */}
+                <div className="track-card-footer" style={{ display: "flex", gap: 10 }}>
+                  {rangeText ? (
+                    <span
+                      className="track-card-range"
+                      style={{ marginRight: "auto", fontSize: 12, opacity: 0.85 }}
+                    >
+                      {rangeText}
+                    </span>
+                  ) : (
+                    <span style={{ marginRight: "auto" }} />
+                  )}
 
-                  <button
-                    type="button"
-                    className="track-card-more"
-                    onClick={handleMoreClick}
-                  >
+                  <button type="button" className="track-card-more" onClick={handleMoreClick}>
                     더보기
                   </button>
                 </div>

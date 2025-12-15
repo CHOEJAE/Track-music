@@ -2,6 +2,7 @@ import { useEffect, useState, Fragment } from "react";
 import axios from "axios";
 import { userStore } from "../store/userStore";
 import { MOCK_HISTORY } from "../components/mockHistory"; // 임시 히스토리 데이터
+import useYouTubeMore from "../hooks/useYouTubeMore";
 
 const HISTORY_URL = import.meta.env.VITE_API_BASE_URL + "/api/history/user";
 
@@ -34,6 +35,7 @@ export default function HistoryPage() {
   const [history, setHistory] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { openYouTubeMore } = useYouTubeMore();
 
   useEffect(() => {
     const userIdForApi = getUserIdForApi();
@@ -203,14 +205,19 @@ export default function HistoryPage() {
                                 </span>
 
                                 {/* 유튜브 링크 */}
-                                <a
-                                  href={song.link}
-                                  target="_blank"
-                                  rel="noreferrer"
+                                <button
+                                  type="button"
                                   className="text-red-400 hover:underline text-sm font-semibold shrink-0 w-10 text-right"
+                                  onClick={() =>
+                                    openYouTubeMore({
+                                      title: song.title,
+                                      artist: song.artist,
+                                      youtubeVideoId: song.youtubeVideoId,
+                                    })
+                                  }
                                 >
                                   듣기
-                                </a>
+                                </button>
                               </li>
                             ))}
                           </ul>
