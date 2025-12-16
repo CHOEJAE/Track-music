@@ -25,7 +25,7 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-page">
-      <div className="profile-card">
+      <div className="profile-card animate-form">
         {/* 뒤로가기 버튼 */}
         <button
           type="button"

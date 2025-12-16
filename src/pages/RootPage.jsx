@@ -149,7 +149,7 @@ export default function RootPage() {
                         bg-clip-text text-transparent
                     "
         >
-          음악추천 서비스
+          핀포인트 음악추천 서비스
         </h1>
 
         <p className="text-gray-300 text-base sm:text-xl leading-relaxed mb-10 text-center">

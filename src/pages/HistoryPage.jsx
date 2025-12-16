@@ -96,7 +96,7 @@ export default function HistoryPage() {
         </h1>
 
         {history.length === 0 ? (
-          <div className="bg-zinc-900 border-l-4 border-red-600 p-6 rounded-lg mt-8 text-gray-300">
+          <div className="bg-zinc-900 border-l-4 animate-form border-red-600 p-6 rounded-lg mt-8 text-gray-300">
             <p className="font-medium">
               {nickname}님, 아직 이용 기록이 없습니다.
             </p>
@@ -106,7 +106,7 @@ export default function HistoryPage() {
           </div>
         ) : (
           /* 테이블 */
-          <div className="overflow-x-auto shadow-2xl rounded-xl bg-zinc-900 border border-red-900/50">
+          <div className="overflow-x-auto animate-confirm shadow-2xl rounded-xl bg-zinc-900 border border-red-900/50">
             <table className="w-full border-collapse rounded-lg overflow-hidden">
               <thead className="bg-zinc-800">
                 <tr>
@@ -158,14 +158,22 @@ export default function HistoryPage() {
                       </td>
                       <td className="px-4 py-3 text-sm">
                         <div className="flex flex-wrap gap-1">
-                          {item.instrument.map((inst) => (
-                            <span
-                              key={inst}
-                              className="px-2 py-0.5 text-xs font-medium bg-red-800/70 text-white rounded-full"
-                            >
-                              {inst}
-                            </span>
-                          ))}
+                          {item.instrument.map((inst) => {
+                            const lowerInst = inst.toLowerCase();
+                            // 'piano'를 'melody'로 변환
+                            const displayInst =
+                              lowerInst === "piano" || lowerInst === "other"
+                                ? "melody"
+                                : inst;
+                            return (
+                              <span
+                                key={inst}
+                                className="px-2 py-0.5 text-xs font-medium bg-red-800/70 text-white rounded-full"
+                              >
+                                {displayInst}
+                              </span>
+                            );
+                          })}
                         </div>
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-400">

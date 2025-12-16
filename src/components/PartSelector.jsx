@@ -15,7 +15,7 @@ export default function PartSelector({
   onTogglePart,
   onStartSplit,
   isProcessing,
-  progress,
+  // progress,
   isSplitDone,
 
   recommendCount,
@@ -70,19 +70,6 @@ export default function PartSelector({
       </ul>
 
       <div className="part-footer">
-        {isProcessing && (
-          <div className="progress-area">
-            <span className="progress-label">처리 중...</span>
-            <div className="progress-bar">
-              <div
-                className="progress-fill"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <span className="progress-percent">{progress}%</span>
-          </div>
-        )}
-
         {/*  추천 개수 입력 */}
         <div className="recommend-count-row">
           <span className="recommend-count-label">추천 개수</span>
@@ -97,6 +84,14 @@ export default function PartSelector({
           />
           <span className="recommend-count-unit">곡</span>
         </div>
+
+        {isProcessing && (
+          <div className="flex items-center justify-center mt-3 text-sm font-semibold text-white mb-2">
+            {/* 로딩 스피너 */}
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+            <span>처리 중입니다...</span>
+          </div>
+        )}
 
         <button
           className={`primary-button mt-5 ${

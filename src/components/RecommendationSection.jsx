@@ -26,7 +26,7 @@ function getPartIcon(instrument) {
   if (v === "vocals" || v === "vocal") return Vocalicon;
   if (v === "drums" || v === "drum") return Drumicon;
   if (v === "bass") return Bassicon;
-  if (v === "piano" || v === "melody") return Pianoicon;
+  if (v === "piano" || v === "melody" || v === "other") return Pianoicon;
 
   return null;
 }
@@ -52,11 +52,11 @@ export default function RecommendationSection({ visible, tracks }) {
               ? `${Math.round(t.similarity * 100)}% 유사`
               : "추천";
 
-          const hasRange =
-            Number.isFinite(Number(t?.startSec)) &&
-            Number.isFinite(Number(t?.endSec));
+          const hasRange = Number.isFinite(Number(t?.startSec));
+          const calculatedEndSec = Number(t.startSec) + 20;
+
           const rangeText = hasRange
-            ? `${mmss(t.startSec)} - ${mmss(t.endSec)}`
+            ? `${mmss(t.startSec)} - ${mmss(calculatedEndSec)}`
             : "";
 
           const Icon = getPartIcon(t?.instrument);
@@ -72,7 +72,7 @@ export default function RecommendationSection({ visible, tracks }) {
           return (
             <article
               key={t?.id ?? `${t?.title}-${t?.artist}`}
-              className="track-card"
+              className="track-card animate-form"
             >
               <div className="track-card-artwork">
                 {/* 아이콘 00% 유사 부분*/}

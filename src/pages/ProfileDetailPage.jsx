@@ -114,7 +114,7 @@ export default function ProfileDetailPage() {
 
   return (
     <div className="profile-page min-h-screen bg-gray-900 flex items-center justify-center p-4">
-      <div className="profile-detail-card w-full max-w-sm mx-auto bg-zinc-800 p-8 rounded-xl shadow-2xl relative">
+      <div className="profile-detail-card animate-form w-full max-w-sm mx-auto bg-zinc-800 p-8 rounded-xl shadow-2xl relative">
         <button
           type="button"
           className="profile-back-button"
@@ -146,7 +146,7 @@ export default function ProfileDetailPage() {
         {/* API 상태 메시지 출력 영역 */}
         {statusMessage.message && (
           <div
-            className={`border-l-4 p-3 mt-4 text-sm font-medium ${
+            className={`border-l-4 animate-fade p-3 mt-4 text-sm font-medium ${
               statusClasses[statusMessage.type] || "bg-gray-800 text-white"
             }`}
           >
@@ -175,7 +175,7 @@ export default function ProfileDetailPage() {
             계정 삭제
           </button>
         ) : (
-          <div className="mt-4 p-4 border border-red-600 rounded-lg bg-zinc-900/70 shadow-inner flex flex-col gap-3">
+          <div className="mt-4 p-4  border animate-confirm border-red-600 rounded-lg bg-zinc-900/70 shadow-inner flex flex-col gap-3">
             <p className="profile-delete-prompt text-red-300 font-bold text-center">
               정말로 삭제하시겠습니까?
             </p>
