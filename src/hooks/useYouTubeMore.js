@@ -54,37 +54,49 @@ async function findYouTubeVideoIdBySearch(query, apiKey) {
 }
 
 export default function useYouTubeMore() {
-  const openYouTubeMore = useCallback(async ({ title, artist, youtubeVideoId }) => {
-    const open = (url) => {
-      const win = window.open(url, "_blank", "noopener,noreferrer");
-      //무시
-    };
+  const openYouTubeMore = useCallback(
+    async ({ title, artist, youtubeVideoId, startSec }) => {
+      let timeParam = "";
+      const start = Number(startSec);
+      if (Number.isFinite(start) && start > 0) {
+        // 초 단위로 정수화하여 ?t=Xs 형식으로 만듭니다.
+        timeParam = `&t=${Math.floor(start)}s`;
+      }
 
-    //videoId 있으면 즉시 영상 재생
-    if (youtubeVideoId) {
-      open(`https://www.youtube.com/watch?v=${youtubeVideoId}`);
-      return;
-    }
+      const open = (url) => {
+        const win = window.open(url, "_blank", "noopener,noreferrer");
+        //무시
+      };
 
-    //없으면 검색으로 찾기
-    const query = `${title || ""} ${artist || ""}`.trim();
-    if (!query) {
-      open("https://www.youtube.com/");
-      return;
-    }
+      //videoId 있으면 즉시 영상 재생
+      if (youtubeVideoId) {
+        open(`https://www.youtube.com/watch?v=${youtubeVideoId}${timeParam}`);
+        return;
+      }
 
-    const fallback = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+      //없으면 검색으로 찾기
+      const query = `${title || ""} ${artist || ""}`.trim();
+      if (!query) {
+        open("https://www.youtube.com/");
+        return;
+      }
 
-    try {
-      const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
-      const found = await findYouTubeVideoIdBySearch(query, apiKey);
+      const fallback = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+        query
+      )}`;
 
-      if (found) open(`https://www.youtube.com/watch?v=${found}`);
-      else open(fallback);
-    } catch {
-      open(fallback);
-    }
-  }, []);
+      try {
+        const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
+        const found = await findYouTubeVideoIdBySearch(query, apiKey);
+
+        if (found) open(`https://www.youtube.com/watch?v=${found}${timeParam}`);
+        else open(fallback);
+      } catch {
+        open(fallback);
+      }
+    },
+    []
+  );
 
   return { openYouTubeMore };
 }

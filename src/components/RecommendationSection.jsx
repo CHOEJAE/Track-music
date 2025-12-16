@@ -53,7 +53,7 @@ export default function RecommendationSection({ visible, tracks }) {
               : "추천";
 
           const hasRange = Number.isFinite(Number(t?.startSec));
-          const calculatedEndSec = Number(t.startSec) + 20;
+          const calculatedEndSec = Number(t.startSec) + 10;
 
           const rangeText = hasRange
             ? `${mmss(t.startSec)} - ${mmss(calculatedEndSec)}`
@@ -66,6 +66,7 @@ export default function RecommendationSection({ visible, tracks }) {
               title: t?.title,
               artist: t?.artist,
               youtubeVideoId: t?.youtubeVideoId,
+              startSec: t?.startSec,
             });
           };
 
