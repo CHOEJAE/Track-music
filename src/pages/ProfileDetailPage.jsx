@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userStore } from "../store/userStore";
 import axios from "axios";
+import Leftarrow from "../components/icons/Leftarrow";
 import "../styles/profile.css";
 
 const LOGOUT_URL = import.meta.env.VITE_API_BASE_URL + "/api/users/logout";
@@ -120,12 +121,14 @@ export default function ProfileDetailPage() {
           className="profile-back-button"
           onClick={() => navigate(-1)}
         >
-          ←
+          <Leftarrow />
         </button>
 
         <h1 className="profile-detail-title">프로필</h1>
 
-        <div className="profile-detail-avatar" />
+        <div className="profile-detail-avatar">
+          <img src="/profile.png" alt="프로필 사진" className="w-[60%]" />
+        </div>
 
         <div className="mb-4 p-3 bg-zinc-900 rounded-lg border border-zinc-700">
           <span className="text-sm font-semibold text-gray-400 block">

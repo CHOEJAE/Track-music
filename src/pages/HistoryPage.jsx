@@ -3,8 +3,12 @@ import axios from "axios";
 import { userStore } from "../store/userStore";
 // import { MOCK_HISTORY } from "../components/mockHistory"; // 임시 히스토리 데이터 (서버 연동되서 사용 안함)
 import useYouTubeMore from "../hooks/useYouTubeMore";
+import ListMusicIcon from "../components/icons/ListMusicicon";
+import Leftarrow from "../components/icons/Leftarrow";
+import Rightarrow from "../components/icons/Rightarrow";
 
 const HISTORY_URL = import.meta.env.VITE_API_BASE_URL + "/api/history/user";
+const ITEMS_PER_PAGE = 15;
 
 // ISO 날짜를 'YYYY-MM-DD HH:MM' 형식으로 포맷하는 헬퍼 함수
 const formatDate = (isoString) => {
@@ -37,6 +41,8 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
   const { openYouTubeMore } = useYouTubeMore();
 
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
     const userIdForApi = userId;
 
@@ -64,6 +70,7 @@ export default function HistoryPage() {
           },
         });
         setHistory(response.data);
+        setCurrentPage(1);
       } catch (error) {
         console.error("히스토리 불러오기 실패:", error);
         setHistory([]); // 실패 시 빈 배열로 설정
@@ -78,6 +85,24 @@ export default function HistoryPage() {
     setExpandedRow((prev) => (prev === index ? null : index));
   };
 
+  // --- 페이지네이션(15개만 띄우고 이동할수 있게)로직 ---
+  const totalItems = history.length;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+
+  // 현재 페이지에 표시할 항목
+  const currentHistory = history.slice(startIndex, endIndex);
+
+  // 페이지 이동 함수
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // 페이지 이동 시, 확장된 행을 닫습니다.
+    setExpandedRow(null);
+    // 페이지 맨 위로 스크롤
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const isReadyToRender = !loading;
 
   if (!isReadyToRender) {
@@ -89,12 +114,17 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-gray-200 p-4 sm:p-8">
+    <div className="min-h-screen bg-black text-gray-200 p-4 sm:p-8 relative overflow-hidden">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-5 pb-5 border-b border-red-700">
-          {nickname}님의 이용 기록
-        </h1>
+        {/* 헤더 */}
+        <div className="flex justify-start border-b border-red-700 mb-4">
+          <ListMusicIcon className="mt-2.5 mr-2" />
+          <h1 className="text-3xl font-bold text-white mb-3 pb-3">
+            {nickname} 님의 이용 기록
+          </h1>
+        </div>
 
+        {/* 히스토리 없음 */}
         {history.length === 0 ? (
           <div className="bg-zinc-900 border-l-4 animate-form border-red-600 p-6 rounded-lg mt-8 text-gray-300">
             <p className="font-medium">
@@ -105,151 +135,180 @@ export default function HistoryPage() {
             </p>
           </div>
         ) : (
-          /* 테이블 */
-          <div className="overflow-x-auto animate-confirm shadow-2xl rounded-xl bg-zinc-900 border border-red-900/50">
-            <table className="w-full border-collapse rounded-lg overflow-hidden">
-              <thead className="bg-zinc-800">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs text-red-400">
-                    No.
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs text-red-400">
-                    사용 링크
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs text-red-400">
-                    구간
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs text-red-400">
-                    악기
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs text-red-400">
-                    날짜 (date)
-                  </th>
-                  <th className="px-4 py-3 text-center text-xs text-red-400">
-                    결과
-                  </th>
-                </tr>
-              </thead>
+          <div className="mt-8">
+            {/* 테이블 */}
+            <div className="overflow-x-auto animate-confirm shadow-2xl rounded-xl bg-zinc-900 border border-red-900/50">
+              <table className="w-full border-collapse">
+                <thead className="bg-zinc-800">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs text-red-400">
+                      No.
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs text-red-400">
+                      사용 링크
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs text-red-400">
+                      구간
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs text-red-400">
+                      악기
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs text-red-400">
+                      날짜
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs text-red-400">
+                      결과
+                    </th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                {history.map((item, index) => (
-                  <Fragment key={item.id}>
-                    <tr
-                      // 확장 여부에 따라 hover 클래스를 조건부로 적용
-                      className={`border-b border-zinc-800 transition duration-150 ${
-                        expandedRow === item.id
-                          ? "bg-zinc-900"
-                          : "hover:bg-zinc-700"
-                      }`}
-                    >
-                      <td className="px-4 py-3 text-sm">{index + 1}</td>
-                      <td className="px-4 py-3 text-red-400 text-sm">
-                        <a
-                          href={item.youtubeUrl}
-                          className="hover:underline"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          링크
-                        </a>
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        {item.startSec}s ~ {item.endSec}s
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        <div className="flex flex-wrap gap-1">
-                          {item.instrument.map((inst) => {
-                            const lowerInst = inst.toLowerCase();
-                            // 'piano'를 'melody'로 변환
-                            const displayInst =
-                              lowerInst === "piano" || lowerInst === "other"
-                                ? "melody"
-                                : inst;
-                            return (
-                              <span
-                                key={inst}
-                                className="px-2 py-0.5 text-xs font-medium bg-red-800/70 text-white rounded-full"
-                              >
-                                {displayInst}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-400">
-                        {formatDate(item.date)}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <button
-                          onClick={() => toggleRow(item.id)}
-                          className="text-sm text-red-400 hover:text-red-300 transition duration-150"
-                        >
-                          {expandedRow === item.id ? "접기 ▲" : "펼치기 ▼"}
-                        </button>
-                      </td>
-                    </tr>
+                <tbody>
+                  {currentHistory.map((item, index) => (
+                    <Fragment key={item.id}>
+                      <tr
+                        className={`border-b border-zinc-800 transition ${
+                          expandedRow === item.id
+                            ? "bg-zinc-900"
+                            : "hover:bg-zinc-700"
+                        }`}
+                      >
+                        <td className="px-4 py-3 text-sm">
+                          {startIndex + index + 1}
+                        </td>
 
-                    {expandedRow === item.id && (
-                      <tr className="bg-zinc-950/70">
-                        <td colSpan={6} className="px-6 py-4">
-                          <h3 className="text-red-400 font-semibold mb-1 border-zinc-800 pb-2">
-                            추천 결과
-                          </h3>
+                        <td className="px-4 py-3 text-red-400 text-sm">
+                          <a
+                            href={item.youtubeUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="hover:underline"
+                          >
+                            링크
+                          </a>
+                        </td>
 
-                          {/* 결과 팝업창 미니 헤더 */}
-                          <div className="flex justify-between items-center text-xs font-semibold text-gray-500 mb-2 px-4 border-b border-zinc-700 pb-1">
-                            <span className="flex-1 text-left">
-                              노래 정보 (제목/가수)
-                            </span>
-                            <span className="w-16 text-right pr-7">유사도</span>
-                            <span className="w-10 text-right">링크</span>
-                          </div>
+                        <td className="px-4 py-3 text-sm">
+                          {item.startSec}s ~ {item.endSec}s
+                        </td>
 
-                          <ul className="space-y-2">
-                            {item.recommendedMusic.map((song, idx) => (
-                              <li
-                                key={idx}
-                                className="flex justify-between items-center bg-zinc-900 px-4 py-2 rounded border border-red-900/50 shadow-md"
-                              >
-                                {/* 노래 정보 */}
-                                <span className="flex-1 min-w-0 pr-2">
-                                  <span className="text-white font-medium block truncate">
-                                    {song.title}
-                                  </span>
-                                  <span className="text-gray-400 text-xs block">
-                                    {song.artist}
-                                  </span>
-                                </span>
-
-                                {/* 유사도 */}
-                                <span className="text-red-300 font-bold text-sm shrink-0 pr-7 w-16 text-right">
-                                  {(song.similarity * 100).toFixed(1)}%
-                                </span>
-
-                                {/* 유튜브 링크 */}
-                                <button
-                                  type="button"
-                                  className="text-red-400 hover:underline text-sm font-semibold shrink-0 w-10 text-right"
-                                  onClick={() =>
-                                    openYouTubeMore({
-                                      title: song.title,
-                                      artist: song.artist,
-                                      youtubeVideoId: song.youtubeVideoId,
-                                    })
-                                  }
+                        <td className="px-4 py-3 text-sm">
+                          <div className="flex flex-wrap gap-1">
+                            {item.instrument.map((inst) => {
+                              const lower = inst.toLowerCase();
+                              const display =
+                                lower === "piano" || lower === "other"
+                                  ? "melody"
+                                  : inst;
+                              return (
+                                <span
+                                  key={inst}
+                                  className="px-2 py-0.5 text-xs bg-red-800/70 text-white rounded-full"
                                 >
-                                  듣기
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
+                                  {display}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </td>
+
+                        <td className="px-4 py-3 text-sm text-gray-400">
+                          {formatDate(item.date)}
+                        </td>
+
+                        <td className="px-4 py-3 text-center">
+                          <button
+                            onClick={() => toggleRow(item.id)}
+                            className="text-sm text-red-400 hover:text-red-300"
+                          >
+                            {expandedRow === item.id ? "접기 ▲" : "펼치기 ▼"}
+                          </button>
                         </td>
                       </tr>
-                    )}
-                  </Fragment>
-                ))}
-              </tbody>
-            </table>
+
+                      {expandedRow === item.id && (
+                        <tr className="bg-zinc-950/70">
+                          <td colSpan={6} className="px-6 py-4">
+                            <h3 className="text-red-400 font-semibold mb-2">
+                              추천 결과
+                            </h3>
+
+                            <ul className="space-y-2">
+                              {item.recommendedMusic.map((song, idx) => (
+                                <li
+                                  key={idx}
+                                  className="flex justify-between items-center bg-zinc-900 px-4 py-2 rounded border border-red-900/50"
+                                >
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-white font-medium truncate">
+                                      {song.title}
+                                    </p>
+                                    <p className="text-xs text-gray-400">
+                                      {song.artist}
+                                    </p>
+                                  </div>
+
+                                  <span className="text-red-300 text-sm font-bold w-16 text-right">
+                                    {(song.similarity * 100).toFixed(1)}%
+                                  </span>
+
+                                  <button
+                                    onClick={() =>
+                                      openYouTubeMore({
+                                        title: song.title,
+                                        artist: song.artist,
+                                        youtubeVideoId: song.youtubeVideoId,
+                                      })
+                                    }
+                                    className="text-red-400 hover:underline text-sm w-10 text-right"
+                                  >
+                                    듣기
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* 페이지네이션 영역 */}
+            {totalPages > 1 && (
+              <div className="flex justify-center space-x-2 mt-6">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-2 py-1 bg-zinc-700 rounded disabled:opacity-50"
+                >
+                  <Leftarrow />
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => handlePageChange(page)}
+                      className={`px-3 py-1 mr-2 rounded text-white font-bold ${
+                        currentPage === page ? "bg-red-800 rounded-2xl" : " "
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-2 py-1 ml-2 bg-zinc-700 rounded disabled:opacity-50"
+                >
+                  <Rightarrow />
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

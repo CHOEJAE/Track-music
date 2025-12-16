@@ -29,7 +29,7 @@
   width: 88px;
   height: 88px;
   border-radius: 50%;
-  background-color: #1d1d1d;
+  background-color: #575757;
   margin: 0 auto 16px;
   display: flex;
   align-items: center;
@@ -83,10 +83,10 @@
 }
 
 .profile-menu-icon {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 999px;
-  background-color: #222222;
+  background-color: #575757;
 }
 
 .profile-menu-chevron {
@@ -228,7 +228,6 @@
   height: 40px;
   border-radius: 999px;
   background-color: #181818;
-  border: 1px solid #333333;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -237,7 +236,7 @@
 }
 
 .profile-icon-button:hover {
-  background-color: #222222;
+  background-color: #575757;
 }
 /* History */
 .history-list {

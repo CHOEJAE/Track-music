@@ -1,5 +1,9 @@
 import { useNavigate, Link } from "react-router-dom";
 import { userStore } from "../store/userStore";
+import Leftarrow from "../components/icons/Leftarrow";
+import Rightarrow from "../components/icons/Rightarrow";
+import Historyicon from "../components/icons/Historyicon";
+import Searchicon from "../components/icons/Searchicon";
 import "../styles/profile.css";
 
 export default function ProfilePage() {
@@ -32,11 +36,13 @@ export default function ProfilePage() {
           className="profile-back-button"
           onClick={() => navigate(-1)}
         >
-          ←
+          <Leftarrow />
         </button>
 
         {/* 아바타 */}
-        <div className="profile-avatar" />
+        <div className="profile-avatar bg-gray-300">
+          <img src="/profile.png" alt="프로필 사진" className="w-[60%]" />
+        </div>
 
         {/* 이름 / 이메일 */}
         <div className="profile-name">{displayName}</div>
@@ -48,18 +54,26 @@ export default function ProfilePage() {
           <ul className="profile-menu">
             <Link to="/profile/detail" className="profile-menu-item">
               <div className="profile-menu-left">
-                <div className="profile-menu-icon" />
+                <div className="profile-menu-icon flex justify-center items-center">
+                  <Searchicon />
+                </div>
                 <span>프로필 상세 보기</span>
               </div>
-              <span className="profile-menu-chevron">›</span>
+              <span className="profile-menu-chevron">
+                <Rightarrow />
+              </span>
             </Link>
 
             <Link to="/profile/history" className="profile-menu-item">
               <div className="profile-menu-left">
-                <div className="profile-menu-icon" />
+                <div className="profile-menu-icon flex justify-center items-center">
+                  <Historyicon />
+                </div>
                 <span>이용 기록 보기</span>
               </div>
-              <span className="profile-menu-chevron">›</span>
+              <span className="profile-menu-chevron">
+                <Rightarrow />
+              </span>
             </Link>
           </ul>
         ) : (
